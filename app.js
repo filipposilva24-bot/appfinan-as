@@ -1,10 +1,8 @@
-// Importando os SDKs do Firebase (versão 12.19.0)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, query, where, onSnapshot, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-analytics.js";
 
-// Sua configuração oficial do Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyCmCXpQq4fRPoF04f24F1-o3Q3pNWy4DI4",
     authDomain: "appfinancas-72e6f.firebaseapp.com",
@@ -15,7 +13,6 @@ const firebaseConfig = {
     measurementId: "G-M6RDXBJDH6"
 };
 
-// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
@@ -33,9 +30,17 @@ const transactionList = document.getElementById('transaction-list');
 const totalBalanceEl = document.getElementById('total-balance');
 const totalIncomeEl = document.getElementById('total-income');
 const totalExpenseEl = document.getElementById('total-expense');
+const filterMonth = document.getElementById('filter-month');
+const filterYear = document.getElementById('filter-year');
+const dateInput = document.getElementById('date');
 
 let currentUser = null;
 let unsubscribeTransactions = null;
+let allTransactions = [];
+let expenseChart = null;
+
+// Definir data padrão de hoje no formulário
+dateInput.value = new Date().toISOString().split('T')[0];
 
 // Autenticação com Google
 loginBtn.addEventListener('click', async () => {
@@ -51,7 +56,7 @@ logoutBtn.addEventListener('click', () => {
     signOut(auth);
 });
 
-// Observador de Estado de Autenticação
+// Observador de Autenticação
 onAuthStateChanged(auth, (user) => {
     if (user) {
         currentUser = user;
@@ -69,6 +74,7 @@ onAuthStateChanged(auth, (user) => {
         
         if (unsubscribeTransactions) unsubscribeTransactions();
         transactionList.innerHTML = '';
+        allTransactions = [];
     }
 });
 
@@ -80,6 +86,8 @@ transactionForm.addEventListener('submit', async (e) => {
     const description = document.getElementById('description').value;
     const amount = parseFloat(document.getElementById('amount').value);
     const type = document.getElementById('type').value;
+    const category = document.getElementById('category').value;
+    const date = document.getElementById('date').value;
 
     try {
         await addDoc(collection(db, "transactions"), {
@@ -87,44 +95,75 @@ transactionForm.addEventListener('submit', async (e) => {
             description,
             amount,
             type,
+            category,
+            date,
             createdAt: serverTimestamp()
         });
         transactionForm.reset();
+        dateInput.value = new Date().toISOString().split('T')[0];
     } catch (error) {
         console.error("Erro ao adicionar transação: ", error);
     }
 });
 
-// Carregar Transações em Tempo Real (Firestore)
+// Carregar Dados em Tempo Real
 function loadTransactions(uid) {
     const q = query(collection(db, "transactions"), where("uid", "==", uid));
     
     unsubscribeTransactions = onSnapshot(q, (snapshot) => {
-        let transactions = [];
+        allTransactions = [];
         snapshot.forEach((doc) => {
-            transactions.push({ id: doc.id, ...doc.data() });
+            allTransactions.push({ id: doc.id, ...doc.data() });
         });
 
-        renderTransactions(transactions);
-        updateSummary(transactions);
+        applyFiltersAndRender();
     });
 }
 
-// Renderizar Transações na Tabela
+// Filtros de Período
+filterMonth.addEventListener('change', applyFiltersAndRender);
+filterYear.addEventListener('change', applyFiltersAndRender);
+
+function applyFiltersAndRender() {
+    const selectedMonth = filterMonth.value;
+    const selectedYear = filterYear.value;
+
+    const filtered = allTransactions.filter(tx => {
+        if (!tx.date) return true;
+        const [year, month] = tx.date.split('-');
+        
+        const matchMonth = (selectedMonth === 'all' || month === selectedMonth);
+        const matchYear = (selectedYear === 'all' || year === selectedYear);
+
+        return matchMonth && matchYear;
+    });
+
+    renderTransactions(filtered);
+    updateSummary(filtered);
+    updateChart(filtered);
+}
+
+// Renderizar Tabela
 function renderTransactions(transactions) {
     transactionList.innerHTML = '';
     
     if (transactions.length === 0) {
-        transactionList.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Nenhuma transação cadastrada.</td></tr>`;
+        transactionList.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Nenhuma transação encontrada para este período.</td></tr>`;
         return;
     }
+
+    // Ordenar por data decrescente
+    transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     transactions.forEach((tx) => {
         const tr = document.createElement('tr');
         const formattedAmount = tx.amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        const formattedDate = tx.date ? tx.date.split('-').reverse().join('/') : '-';
         
         tr.innerHTML = `
+            <td>${formattedDate}</td>
             <td>${tx.description}</td>
+            <td><span class="badge-category">${tx.category || 'Outros'}</span></td>
             <td style="color: ${tx.type === 'income' ? 'var(--income)' : 'var(--expense)'}">${formattedAmount}</td>
             <td>${tx.type === 'income' ? 'Receita' : 'Despesa'}</td>
             <td><button class="btn-delete" onclick="window.deleteTransaction('${tx.id}')">Excluir</button></td>
@@ -144,7 +183,7 @@ window.deleteTransaction = async function(id) {
     }
 }
 
-// Atualizar Resumo (Cards)
+// Atualizar Cards de Resumo
 function updateSummary(transactions) {
     let income = 0;
     let expense = 0;
@@ -162,4 +201,52 @@ function updateSummary(transactions) {
     totalBalanceEl.textContent = balance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     totalIncomeEl.textContent = income.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     totalExpenseEl.textContent = expense.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+// Atualizar Gráfico com Chart.js
+function updateChart(transactions) {
+    const expensesByCategory = {};
+
+    transactions.forEach(tx => {
+        if (tx.type === 'expense') {
+            const cat = tx.category || 'Outros';
+            expensesByCategory[cat] = (expensesByCategory[cat] || 0) + tx.amount;
+        }
+    });
+
+    const categories = Object.keys(expensesByCategory);
+    const amounts = Object.values(expensesByCategory);
+
+    const ctx = document.getElementById('expenseChart').getContext('2d');
+
+    if (expenseChart) {
+        expenseChart.destroy();
+    }
+
+    expenseChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: categories,
+            datasets: [{
+                data: amounts,
+                backgroundColor: [
+                    '#3b82f6', '#22c55e', '#eab308', '#ec4899', '#8b5cf6', '#64748b'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#f8fafc',
+                        font: { family: 'Inter', size: 12 }
+                    }
+                }
+            }
+        }
+    });
 }
