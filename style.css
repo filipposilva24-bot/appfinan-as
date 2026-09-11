@@ -49,7 +49,6 @@ body {
 .auth-card h1 {
     font-size: 2rem;
     margin-bottom: 0.5rem;
-    color: var(--text-color);
 }
 
 .auth-card p {
@@ -89,7 +88,7 @@ body {
     border-color: var(--text-color);
 }
 
-/* App Screen & Layout */
+/* App Layout */
 .app-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -104,7 +103,7 @@ body {
     padding: 1rem 2rem;
     border-radius: 1rem;
     border: 1px solid var(--border);
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .user-info {
@@ -119,12 +118,44 @@ body {
     border-radius: 50%;
 }
 
+/* Filtros */
+.filter-panel {
+    display: flex;
+    gap: 1.5rem;
+    background: var(--card-bg);
+    padding: 1rem 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+    align-items: center;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.filter-group label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.filter-group select {
+    background: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+}
+
 /* Cards Grid */
 .cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .card {
@@ -148,15 +179,16 @@ body {
 .card.income .amount { color: var(--income); }
 .card.expense .amount { color: var(--expense); }
 
-/* Content Grid */
-.content-grid {
+/* Dashboard Grid */
+.dashboard-grid {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
-@media(max-width: 768px) {
-    .content-grid {
+@media(max-width: 900px) {
+    .dashboard-grid {
         grid-template-columns: 1fr;
     }
 }
@@ -170,7 +202,19 @@ body {
 
 .panel h2 {
     font-size: 1.25rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.full-width-panel {
+    margin-top: 1.5rem;
+}
+
+.chart-container {
+    position: relative;
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .form-group {
@@ -212,6 +256,15 @@ th, td {
 
 th {
     color: var(--text-muted);
+    font-weight: 600;
+}
+
+.badge-category {
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--primary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
     font-weight: 600;
 }
 
