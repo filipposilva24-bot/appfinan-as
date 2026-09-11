@@ -2,103 +2,105 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinanceApp - Gestão Financeira Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FinanceApp</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
     <!-- TELA DE LOGIN -->
     <div id="auth-screen" class="auth-container">
         <div class="auth-card">
+            <div class="logo-icon"><i class="fa-solid fa-wallet"></i></div>
             <h1>FinanceApp</h1>
-            <p>Controle suas finanças de forma simples e moderna.</p>
-            <button id="login-btn" class="btn-primary">Entrar com o Google</button>
+            <p>Seu controle financeiro inteligente.</p>
+            <button id="login-btn" class="btn-primary"><i class="fa-brands fa-google"></i> Entrar com Google</button>
         </div>
     </div>
 
-    <!-- DASHBOARD -->
+    <!-- APP PRINCIPAL -->
     <div id="app-screen" class="app-container hidden">
-        <header class="header">
-            <div class="header-left">
+        
+        <!-- ABA 1: INÍCIO (Dashboard) -->
+        <section id="tab-home" class="tab-content active">
+            <header class="app-header">
                 <div class="user-info">
                     <img id="user-photo" src="" alt="Foto" class="avatar">
-                    <span id="user-name">Usuário</span>
+                    <div>
+                        <p class="greeting">Olá,</p>
+                        <h2 id="user-name">Usuário</h2>
+                    </div>
                 </div>
-                <!-- Indicadores Econômicos (API) -->
-                <div id="currency-ticker" class="ticker">
-                    <span id="usd-rate">USD: Carregando...</span>
-                    <span id="eur-rate">EUR: Carregando...</span>
+                <button id="theme-btn" class="btn-icon"><i class="fa-solid fa-moon"></i></button>
+            </header>
+
+            <div class="balance-card">
+                <p>Saldo Atual</p>
+                <h1 id="total-balance">R$ 0,00</h1>
+                <div class="balance-row">
+                    <div class="balance-col">
+                        <i class="fa-solid fa-arrow-down income-icon"></i>
+                        <div>
+                            <span>Receitas</span>
+                            <p id="total-income">R$ 0,00</p>
+                        </div>
+                    </div>
+                    <div class="balance-col">
+                        <i class="fa-solid fa-arrow-up expense-icon"></i>
+                        <div>
+                            <span>Despesas</span>
+                            <p id="total-expense">R$ 0,00</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="header-right">
-                <button id="theme-btn" class="btn-icon" title="Alternar Tema">🌙</button>
-                <button id="logout-btn" class="btn-secondary">Sair</button>
+
+            <div class="section-title">
+                <h3>Últimas Transações</h3>
+                <span class="filter-badge">Este Mês</span>
             </div>
-        </header>
+            
+            <div class="transactions-list-mobile" id="transaction-list-mobile">
+                <!-- Lista injetada via JS -->
+            </div>
+        </section>
 
-        <main class="main-content">
-            <!-- Barra de Filtros -->
-            <section class="filter-panel">
-                <div class="filter-group">
-                    <label for="filter-month">Mês:</label>
-                    <select id="filter-month">
-                        <option value="all">Todos</option>
-                        <option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option>
-                        <option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option>
-                        <option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option>
-                        <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="filter-year">Ano:</label>
-                    <select id="filter-year">
-                        <option value="all">Todos</option>
-                        <option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option>
-                    </select>
-                </div>
-            </section>
+        <!-- ABA 2: LANÇAR (Formulário) -->
+        <section id="tab-add" class="tab-content">
+            <header class="app-header-simple">
+                <h2>Novo Lançamento</h2>
+            </header>
+            
+            <div class="panel">
+                <form id="transaction-form">
+                    <div class="form-group amount-group">
+                        <label for="amount">Valor da Transação</label>
+                        <div class="input-prefix">
+                            <span>R$</span>
+                            <input type="number" step="0.01" id="amount" placeholder="0,00" required>
+                        </div>
+                    </div>
+                    
+                    <div class="type-selector">
+                        <input type="radio" id="type-expense" name="type-radio" value="expense" checked>
+                        <label for="type-expense" class="type-btn expense-btn">Despesa</label>
+                        
+                        <input type="radio" id="type-income" name="type-radio" value="income">
+                        <label for="type-income" class="type-btn income-btn">Receita</label>
+                    </div>
+                    <input type="hidden" id="type" value="expense"> <!-- Campo oculto para compatibilidade com o JS antigo -->
 
-            <!-- Cards de Resumo -->
-            <section class="cards-grid">
-                <div class="card">
-                    <h3>Saldo Total</h3>
-                    <p id="total-balance" class="amount">R$ 0,00</p>
-                </div>
-                <div class="card income">
-                    <h3>Receitas</h3>
-                    <p id="total-income" class="amount">R$ 0,00</p>
-                </div>
-                <div class="card expense">
-                    <h3>Despesas</h3>
-                    <p id="total-expense" class="amount">R$ 0,00</p>
-                </div>
-            </section>
-
-            <!-- Dashboard Grid (Formulário + Gráfico + Orçamentos) -->
-            <div class="dashboard-grid">
-                <!-- Formulário -->
-                <div class="panel">
-                    <h2>Nova Transação</h2>
-                    <form id="transaction-form">
-                        <div class="form-group">
-                            <label for="description">Descrição</label>
-                            <input type="text" id="description" placeholder="Ex: Supermercado, Aluguel..." required>
-                        </div>
-                        <div class="form-group">
-                            <label for="amount">Valor (R$)</label>
-                            <input type="number" step="0.01" id="amount" placeholder="0.00" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="type">Tipo</label>
-                            <select id="type">
-                                <option value="income">Receita</option>
-                                <option value="expense">Despesa</option>
-                            </select>
-                        </div>
+                    <div class="form-group">
+                        <label for="description">Descrição</label>
+                        <input type="text" id="description" placeholder="Ex: Supermercado, Aluguel..." required>
+                    </div>
+                    
+                    <div class="form-row">
                         <div class="form-group">
                             <label for="category">Categoria</label>
                             <select id="category">
@@ -114,54 +116,99 @@
                             <label for="date">Data</label>
                             <input type="date" id="date" required>
                         </div>
-                        <div class="form-group checkbox-group">
-                            <label><input type="checkbox" id="is-recurring"> Despesa Fixa / Recorrente mensal</label>
-                        </div>
-                        <button type="submit" class="btn-primary">Adicionar Transação</button>
-                    </form>
-                </div>
-
-                <!-- Gráfico & Metas -->
-                <div class="right-column">
-                    <div class="panel chart-panel">
-                        <h2>Despesas por Categoria</h2>
-                        <div class="chart-container">
-                            <canvas id="expenseChart"></canvas>
-                        </div>
                     </div>
-
-                    <!-- Metas de Gastos -->
-                    <div class="panel budget-panel">
-                        <h2>Metas de Gastos (Teto Mensal)</h2>
-                        <div class="budget-list" id="budget-list">
-                            <!-- Gerado via JS -->
-                        </div>
+                    
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="is-recurring"> 
+                            <span>Despesa Fixa / Recorrente</span>
+                        </label>
                     </div>
+                    
+                    <button type="submit" class="btn-primary btn-large">Salvar Lançamento</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ABA 3: RELATÓRIOS E METAS -->
+        <section id="tab-reports" class="tab-content">
+            <header class="app-header-simple">
+                <h2>Relatórios</h2>
+            </header>
+
+            <div class="filter-panel">
+                <select id="filter-month">
+                    <option value="all">Todos os Meses</option>
+                    <option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option>
+                    <option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option>
+                    <option value="07">Jul</option><option value="08">Ago</option><option value="09" selected>Set</option>
+                    <option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option>
+                </select>
+                <select id="filter-year">
+                    <option value="all">Todos os Anos</option>
+                    <option value="2025">2025</option>
+                    <option value="2026" selected>2026</option>
+                </select>
+            </div>
+
+            <div class="panel chart-panel">
+                <h3>Gastos por Categoria</h3>
+                <div class="chart-container">
+                    <canvas id="expenseChart"></canvas>
                 </div>
             </div>
 
-            <!-- Tabela de Histórico -->
-            <div class="panel full-width-panel">
-                <h2>Histórico de Transações</h2>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Data</th>
-                                <th>Descrição</th>
-                                <th>Categoria</th>
-                                <th>Valor</th>
-                                <th>Tipo / Fixa</th>
-                                <th>Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody id="transaction-list">
-                            <!-- Injetado via JS -->
-                        </tbody>
-                    </table>
+            <div class="panel budget-panel">
+                <h3>Metas de Gastos</h3>
+                <div class="budget-list" id="budget-list">
+                    <!-- Gerado via JS -->
                 </div>
             </div>
-        </main>
+        </section>
+
+        <!-- ABA 4: PERFIL E CONFIG -->
+        <section id="tab-profile" class="tab-content">
+            <header class="app-header-simple">
+                <h2>Perfil</h2>
+            </header>
+            
+            <div class="panel text-center">
+                <img id="profile-photo-large" src="" alt="Foto" class="avatar-large">
+                <h3 id="profile-name">Nome</h3>
+            </div>
+
+            <div class="panel">
+                <h3>Câmbio Atual</h3>
+                <div class="ticker-box">
+                    <div class="ticker-item"><i class="fa-solid fa-dollar-sign"></i> <span id="usd-rate">Carregando...</span></div>
+                    <div class="ticker-item"><i class="fa-solid fa-euro-sign"></i> <span id="eur-rate">Carregando...</span></div>
+                </div>
+            </div>
+
+            <button id="logout-btn" class="btn-danger btn-large"><i class="fa-solid fa-right-from-bracket"></i> Sair da Conta</button>
+            <div class="hidden" style="display:none;"><tbody id="transaction-list"></tbody></div> <!-- Mantido para evitar erro no JS -->
+        </section>
+
+        <!-- MENU INFERIOR (Bottom Navigation) -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-tab="tab-home">
+                <i class="fa-solid fa-house"></i>
+                <span>Início</span>
+            </button>
+            <button class="nav-item action-item" data-tab="tab-add">
+                <div class="fab"><i class="fa-solid fa-plus"></i></div>
+                <span>Lançar</span>
+            </button>
+            <button class="nav-item" data-tab="tab-reports">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Relatórios</span>
+            </button>
+            <button class="nav-item" data-tab="tab-profile">
+                <i class="fa-solid fa-user"></i>
+                <span>Perfil</span>
+            </button>
+        </nav>
+
     </div>
 
     <script type="module" src="app.js"></script>
