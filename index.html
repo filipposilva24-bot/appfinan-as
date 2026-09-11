@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="style.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js para os gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -30,6 +32,37 @@
         </header>
 
         <main class="main-content">
+            <!-- Barra de Filtros por Período -->
+            <section class="filter-panel">
+                <div class="filter-group">
+                    <label for="filter-month">Mês:</label>
+                    <select id="filter-month">
+                        <option value="all">Todos os Meses</option>
+                        <option value="01">Janeiro</option>
+                        <option value="02">Fevereiro</option>
+                        <option value="03">Março</option>
+                        <option value="04">Abril</option>
+                        <option value="05">Maio</option>
+                        <option value="06">Junho</option>
+                        <option value="07">Julho</option>
+                        <option value="08">Agosto</option>
+                        <option value="09">Setembro</option>
+                        <option value="10">Outubro</option>
+                        <option value="11">Novembro</option>
+                        <option value="12">Dezembro</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-year">Ano:</label>
+                    <select id="filter-year">
+                        <option value="all">Todos os Anos</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                    </select>
+                </div>
+            </section>
+
             <!-- Cards de Resumo -->
             <section class="cards-grid">
                 <div class="card">
@@ -46,15 +79,15 @@
                 </div>
             </section>
 
-            <!-- Seção de Lançamentos e Histórico -->
-            <div class="content-grid">
+            <!-- Seção de Gráficos e Formulário/Histórico -->
+            <div class="dashboard-grid">
                 <!-- Formulário de Transação -->
                 <div class="panel">
                     <h2>Nova Transação</h2>
                     <form id="transaction-form">
                         <div class="form-group">
                             <label for="description">Descrição</label>
-                            <input type="text" id="description" placeholder="Ex: Salário, Aluguel..." required>
+                            <input type="text" id="description" placeholder="Ex: Supermercado, Aluguel..." required>
                         </div>
                         <div class="form-group">
                             <label for="amount">Valor (R$)</label>
@@ -67,34 +100,59 @@
                                 <option value="expense">Despesa</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label for="category">Categoria</label>
+                            <select id="category">
+                                <option value="Alimentação">Alimentação</option>
+                                <option value="Moradia">Moradia</option>
+                                <option value="Transporte">Transporte</option>
+                                <option value="Lazer">Lazer</option>
+                                <option value="Salário">Salário</option>
+                                <option value="Outros">Outros</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Data</label>
+                            <input type="date" id="date" required>
+                        </div>
                         <button type="submit" class="btn-primary">Adicionar Transação</button>
                     </form>
                 </div>
 
-                <!-- Lista de Transações -->
-                <div class="panel">
-                    <h2>Histórico</h2>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Descrição</th>
-                                    <th>Valor</th>
-                                    <th>Tipo</th>
-                                    <th>Ação</th>
-                                </tr>
-                            </thead>
-                            <tbody id="transaction-list">
-                                <!-- Injetado via JS -->
-                            </tbody>
-                        </table>
+                <!-- Gráfico de Despesas -->
+                <div class="panel chart-panel">
+                    <h2>Despesas por Categoria</h2>
+                    <div class="chart-container">
+                        <canvas id="expenseChart"></canvas>
                     </div>
+                </div>
+            </div>
+
+            <!-- Lista de Transações -->
+            <div class="panel full-width-panel">
+                <h2>Histórico de Transações</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Categoria</th>
+                                <th>Valor</th>
+                                <th>Tipo</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transaction-list">
+                            <!-- Injetado via JS -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Scripts do Firebase e da Aplicação (Modular) -->
+    <!-- Script Principal -->
     <script type="module" src="app.js"></script>
 </body>
 </html>
