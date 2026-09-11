@@ -1,1 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanceApp - Gestão Financeira</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
 
+    <!-- TELA DE LOGIN -->
+    <div id="auth-screen" class="auth-container">
+        <div class="auth-card">
+            <h1>FinanceApp</h1>
+            <p>Controle suas finanças de forma simples e moderna.</p>
+            <button id="login-btn" class="btn-primary">Entrar com o Google</button>
+        </div>
+    </div>
+
+    <!-- DASHBOARD (Oculto até o login) -->
+    <div id="app-screen" class="app-container hidden">
+        <header class="header">
+            <div class="user-info">
+                <img id="user-photo" src="" alt="Foto do usuário" class="avatar">
+                <span id="user-name">Usuário</span>
+            </div>
+            <button id="logout-btn" class="btn-secondary">Sair</button>
+        </header>
+
+        <main class="main-content">
+            <!-- Cards de Resumo -->
+            <section class="cards-grid">
+                <div class="card">
+                    <h3>Saldo Total</h3>
+                    <p id="total-balance" class="amount">R$ 0,00</p>
+                </div>
+                <div class="card income">
+                    <h3>Receitas</h3>
+                    <p id="total-income" class="amount">R$ 0,00</p>
+                </div>
+                <div class="card expense">
+                    <h3>Despesas</h3>
+                    <p id="total-expense" class="amount">R$ 0,00</p>
+                </div>
+            </section>
+
+            <!-- Seção de Lançamentos e Histórico -->
+            <div class="content-grid">
+                <!-- Formulário de Transação -->
+                <div class="panel">
+                    <h2>Nova Transação</h2>
+                    <form id="transaction-form">
+                        <div class="form-group">
+                            <label for="description">Descrição</label>
+                            <input type="text" id="description" placeholder="Ex: Salário, Aluguel..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="amount">Valor (R$)</label>
+                            <input type="number" step="0.01" id="amount" placeholder="0.00" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="type">Tipo</label>
+                            <select id="type">
+                                <option value="income">Receita</option>
+                                <option value="expense">Despesa</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary">Adicionar Transação</button>
+                    </form>
+                </div>
+
+                <!-- Lista de Transações -->
+                <div class="panel">
+                    <h2>Histórico</h2>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Descrição</th>
+                                    <th>Valor</th>
+                                    <th>Tipo</th>
+                                    <th>Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transaction-list">
+                                <!-- Injetado via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts do Firebase e da Aplicação (Modular) -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>
