@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinanceApp - Gestão Financeira</title>
+    <title>FinanceApp - Gestão Financeira Pro</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts -->
+    <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chart.js para os gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -21,44 +20,44 @@
         </div>
     </div>
 
-    <!-- DASHBOARD (Oculto até o login) -->
+    <!-- DASHBOARD -->
     <div id="app-screen" class="app-container hidden">
         <header class="header">
-            <div class="user-info">
-                <img id="user-photo" src="" alt="Foto do usuário" class="avatar">
-                <span id="user-name">Usuário</span>
+            <div class="header-left">
+                <div class="user-info">
+                    <img id="user-photo" src="" alt="Foto" class="avatar">
+                    <span id="user-name">Usuário</span>
+                </div>
+                <!-- Indicadores Econômicos (API) -->
+                <div id="currency-ticker" class="ticker">
+                    <span id="usd-rate">USD: Carregando...</span>
+                    <span id="eur-rate">EUR: Carregando...</span>
+                </div>
             </div>
-            <button id="logout-btn" class="btn-secondary">Sair</button>
+            <div class="header-right">
+                <button id="theme-btn" class="btn-icon" title="Alternar Tema">🌙</button>
+                <button id="logout-btn" class="btn-secondary">Sair</button>
+            </div>
         </header>
 
         <main class="main-content">
-            <!-- Barra de Filtros por Período -->
+            <!-- Barra de Filtros -->
             <section class="filter-panel">
                 <div class="filter-group">
                     <label for="filter-month">Mês:</label>
                     <select id="filter-month">
-                        <option value="all">Todos os Meses</option>
-                        <option value="01">Janeiro</option>
-                        <option value="02">Fevereiro</option>
-                        <option value="03">Março</option>
-                        <option value="04">Abril</option>
-                        <option value="05">Maio</option>
-                        <option value="06">Junho</option>
-                        <option value="07">Julho</option>
-                        <option value="08">Agosto</option>
-                        <option value="09">Setembro</option>
-                        <option value="10">Outubro</option>
-                        <option value="11">Novembro</option>
-                        <option value="12">Dezembro</option>
+                        <option value="all">Todos</option>
+                        <option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option>
+                        <option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option>
+                        <option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option>
+                        <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
                     </select>
                 </div>
                 <div class="filter-group">
                     <label for="filter-year">Ano:</label>
                     <select id="filter-year">
-                        <option value="all">Todos os Anos</option>
-                        <option value="2025">2025</option>
-                        <option value="2026">2026</option>
-                        <option value="2027">2027</option>
+                        <option value="all">Todos</option>
+                        <option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option>
                     </select>
                 </div>
             </section>
@@ -79,9 +78,9 @@
                 </div>
             </section>
 
-            <!-- Seção de Gráficos e Formulário/Histórico -->
+            <!-- Dashboard Grid (Formulário + Gráfico + Orçamentos) -->
             <div class="dashboard-grid">
-                <!-- Formulário de Transação -->
+                <!-- Formulário -->
                 <div class="panel">
                     <h2>Nova Transação</h2>
                     <form id="transaction-form">
@@ -115,20 +114,33 @@
                             <label for="date">Data</label>
                             <input type="date" id="date" required>
                         </div>
+                        <div class="form-group checkbox-group">
+                            <label><input type="checkbox" id="is-recurring"> Despesa Fixa / Recorrente mensal</label>
+                        </div>
                         <button type="submit" class="btn-primary">Adicionar Transação</button>
                     </form>
                 </div>
 
-                <!-- Gráfico de Despesas -->
-                <div class="panel chart-panel">
-                    <h2>Despesas por Categoria</h2>
-                    <div class="chart-container">
-                        <canvas id="expenseChart"></canvas>
+                <!-- Gráfico & Metas -->
+                <div class="right-column">
+                    <div class="panel chart-panel">
+                        <h2>Despesas por Categoria</h2>
+                        <div class="chart-container">
+                            <canvas id="expenseChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Metas de Gastos -->
+                    <div class="panel budget-panel">
+                        <h2>Metas de Gastos (Teto Mensal)</h2>
+                        <div class="budget-list" id="budget-list">
+                            <!-- Gerado via JS -->
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Lista de Transações -->
+            <!-- Tabela de Histórico -->
             <div class="panel full-width-panel">
                 <h2>Histórico de Transações</h2>
                 <div class="table-container">
@@ -139,7 +151,7 @@
                                 <th>Descrição</th>
                                 <th>Categoria</th>
                                 <th>Valor</th>
-                                <th>Tipo</th>
+                                <th>Tipo / Fixa</th>
                                 <th>Ação</th>
                             </tr>
                         </thead>
@@ -152,7 +164,6 @@
         </main>
     </div>
 
-    <!-- Script Principal -->
     <script type="module" src="app.js"></script>
 </body>
 </html>
