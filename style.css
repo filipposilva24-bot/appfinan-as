@@ -120,7 +120,21 @@ body {
     border: 1px solid var(--border);
 }
 
-@media(max-width: 768px) { .ticker { display: none; } }
+@media(max-width: 768px) { 
+    .header {
+        flex-wrap: wrap;
+    }
+    .header-left {
+        flex-wrap: wrap;
+        width: 100%;
+    }
+    .ticker {
+        width: 100%;
+        justify-content: center;
+        margin-top: 0.5rem;
+    }
+}
+
 
 /* Filtros */
 .filter-panel {
