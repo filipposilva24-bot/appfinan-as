@@ -659,3 +659,90 @@ button {
     transform: translateY(0);
     transition: opacity 0.3s, transform 0.3s;
 }
+
+/* =========================================
+   MODAIS E GERENCIAMENTO DINÂMICO
+   ========================================= */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.modal-content h3 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.modal-content input, .modal-content select {
+    padding: 0.9rem;
+    background: var(--bg-color);
+    border: 1px solid var(--border);
+    border-radius: 0.8rem;
+    color: var(--text-color);
+    font-size: 1rem;
+    outline: none;
+}
+
+/* Lista de Gerenciamento */
+.manage-list {
+    list-style: none;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 0.8rem;
+    background: var(--bg-color);
+}
+
+.manage-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+}
+
+.manage-item:last-child {
+    border-bottom: none;
+}
+
+.btn-delete-icon {
+    color: var(--expense);
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0.2rem;
+}
+
+/* Veículos Card com Botão Excluir */
+.vehicle-card { position: relative; }
+.btn-delete-vehicle {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: var(--text-muted);
+    background: transparent;
+    font-size: 1rem;
+}
+.btn-delete-vehicle:hover { color: var(--expense); }
