@@ -7,10 +7,8 @@
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Bibliotecas: Gráficos e Exportação PDF -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <!-- Ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -63,7 +61,6 @@
                 </div>
             </div>
 
-            <!-- NOVA SEÇÃO: CAIXINHAS -->
             <div class="section-title">
                 <h3>Minhas Caixinhas</h3>
                 <span class="filter-badge"><i class="fa-solid fa-plus"></i> Nova</span>
@@ -108,23 +105,26 @@
                         <label for="type-income" class="type-btn income-btn">Receita</label>
                     </div>
                     <input type="hidden" id="type" value="expense">
+                    
                     <div class="form-group">
                         <label for="description">Descrição</label>
                         <input type="text" id="description" placeholder="Ex: Supermercado, Internet..." required>
                     </div>
+                    
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="category">Categoria</label>
-                            <select id="category">
-                                <option value="Alimentação">Alimentação</option>
-                                <option value="Moradia">Moradia</option>
-                                <option value="Transporte">Transporte</option>
-                                <option value="Veículo">Veículo</option>
-                                <option value="Lazer">Lazer</option>
-                                <option value="Salário">Salário</option>
-                                <option value="Outros">Outros</option>
-                            </select>
+                        <!-- Categoria com botão Dinâmico -->
+                        <div class="form-group" style="display: flex; gap: 0.5rem; align-items: flex-end;">
+                            <div style="flex: 1;">
+                                <label for="category">Categoria</label>
+                                <select id="category">
+                                    <!-- Injetado via JS -->
+                                </select>
+                            </div>
+                            <button type="button" id="btn-open-category-modal" class="btn-secondary" style="padding: 0.9rem;" title="Gerenciar Categorias">
+                                <i class="fa-solid fa-gear"></i>
+                            </button>
                         </div>
+                        
                         <div class="form-group">
                             <label for="date">Data</label>
                             <input type="date" id="date" required>
@@ -138,45 +138,15 @@
             </div>
         </section>
 
-        <!-- ABA 3: VEÍCULOS (NOVA) -->
+        <!-- ABA 3: VEÍCULOS -->
         <section id="tab-vehicles" class="tab-content">
-            <header class="app-header-simple"><h2>Frota Pessoal</h2></header>
+            <header class="app-header-simple" style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Frota Pessoal</h2>
+                <button id="btn-open-vehicle-modal" class="btn-icon"><i class="fa-solid fa-plus"></i></button>
+            </header>
             
-            <div class="vehicle-card">
-                <div class="vehicle-header">
-                    <div style="display:flex; align-items:center; gap:0.5rem;">
-                        <div class="vehicle-icon"><i class="fa-solid fa-motorcycle"></i></div>
-                        <h3>Yamaha FZ25</h3>
-                    </div>
-                    <span class="badge-category">2025</span>
-                </div>
-                <div class="vehicle-stats">
-                    <div class="stat-box">
-                        <span>Gasto no Mês</span>
-                        <p class="amount-text" style="color:var(--expense);">R$ 0,00</p>
-                    </div>
-                    <div class="stat-box">
-                        <span>Próx. Revisão</span>
-                        <p>10.000 km</p>
-                    </div>
-                </div>
-                <div style="display:flex; gap:0.5rem; margin-top:1rem;">
-                    <button class="btn-secondary" style="flex:1; font-size:0.8rem;"><i class="fa-solid fa-gas-pump"></i> Abastecer</button>
-                    <button class="btn-secondary" style="flex:1; font-size:0.8rem;"><i class="fa-solid fa-wrench"></i> Manutenção</button>
-                </div>
-            </div>
-
-            <div class="vehicle-card">
-                <div class="vehicle-header">
-                    <div style="display:flex; align-items:center; gap:0.5rem;">
-                        <div class="vehicle-icon"><i class="fa-solid fa-car"></i></div>
-                        <h3>Carro (Principal)</h3>
-                    </div>
-                </div>
-                <div class="vehicle-stats">
-                    <div class="stat-box"><span>Gasto no Mês</span><p class="amount-text" style="color:var(--expense);">R$ 0,00</p></div>
-                    <div class="stat-box"><span>Seguro</span><p>Ativo</p></div>
-                </div>
+            <div id="vehicles-list">
+                <!-- Veículos Injetados via JS -->
             </div>
         </section>
 
@@ -189,18 +159,11 @@
                 </select>
                 <select id="filter-year"><option value="all">Todos</option><option value="2025">2025</option><option value="2026" selected>2026</option></select>
             </div>
-            
             <button id="export-pdf-btn" class="btn-secondary" style="width:100%; margin-bottom:1.5rem;"><i class="fa-solid fa-file-pdf"></i> Exportar Relatório em PDF</button>
-
-            <!-- Área que será exportada -->
             <div id="export-area">
                 <div class="panel chart-panel">
                     <h3>Gastos por Categoria</h3>
                     <div class="chart-container"><canvas id="expenseChart"></canvas></div>
-                </div>
-                <div class="panel budget-panel">
-                    <h3>Metas de Gastos</h3>
-                    <div class="budget-list" id="budget-list"></div>
                 </div>
             </div>
         </section>
@@ -222,7 +185,6 @@
             <button id="logout-btn" class="btn-danger btn-large"><i class="fa-solid fa-right-from-bracket"></i> Sair da Conta</button>
         </section>
 
-        <!-- MENU INFERIOR (5 Abas) -->
         <nav class="bottom-nav">
             <button class="nav-item active" data-tab="tab-home"><i class="fa-solid fa-house"></i><span>Início</span></button>
             <button class="nav-item" data-tab="tab-vehicles"><i class="fa-solid fa-car"></i><span>Veículos</span></button>
@@ -230,8 +192,38 @@
             <button class="nav-item" data-tab="tab-reports"><i class="fa-solid fa-chart-pie"></i><span>Relatórios</span></button>
             <button class="nav-item" data-tab="tab-profile"><i class="fa-solid fa-user"></i><span>Perfil</span></button>
         </nav>
-
     </div>
+
+    <!-- ================= MODAIS DINÂMICOS ================= -->
+    <!-- Modal Categorias -->
+    <div id="modal-category" class="modal hidden">
+        <div class="modal-content">
+            <h3>Gerenciar Categorias</h3>
+            <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+                <input type="text" id="new-category-name" placeholder="Nova categoria..." style="flex:1;">
+                <button id="btn-save-category" class="btn-primary" style="width:auto;"><i class="fa-solid fa-plus"></i></button>
+            </div>
+            <ul id="category-manage-list" class="manage-list"></ul>
+            <button class="btn-secondary close-modal" style="margin-top:1rem; width:100%;">Fechar</button>
+        </div>
+    </div>
+
+    <!-- Modal Veículos -->
+    <div id="modal-vehicle" class="modal hidden">
+        <div class="modal-content">
+            <h3>Novo Veículo</h3>
+            <input type="text" id="new-vehicle-name" placeholder="Ex: Honda Civic" style="margin-bottom:0.5rem; width:100%;">
+            <select id="new-vehicle-type" style="width:100%; margin-bottom:1rem;">
+                <option value="car">Carro</option>
+                <option value="motorcycle">Moto</option>
+            </select>
+            <div style="display:flex; gap:1rem;">
+                <button class="btn-secondary close-modal" style="flex:1;">Cancelar</button>
+                <button id="btn-save-vehicle" class="btn-primary" style="flex:1;">Salvar</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module" src="app.js"></script>
 </body>
 </html>
