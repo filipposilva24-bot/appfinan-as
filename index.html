@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FinanceApp</title>
+    <title>FinanceApp Pro</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bibliotecas: Gráficos e Exportação PDF -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- Ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- TELA DE LOGIN -->
     <div id="auth-screen" class="auth-container">
         <div class="auth-card">
             <div class="logo-icon"><i class="fa-solid fa-wallet"></i></div>
@@ -23,10 +24,9 @@
         </div>
     </div>
 
-    <!-- APP PRINCIPAL -->
     <div id="app-screen" class="app-container hidden">
         
-        <!-- ABA 1: INÍCIO (Dashboard) -->
+        <!-- ABA 1: INÍCIO -->
         <section id="tab-home" class="tab-content active">
             <header class="app-header">
                 <div class="user-info">
@@ -36,70 +36,82 @@
                         <h2 id="user-name">Usuário</h2>
                     </div>
                 </div>
-                <button id="theme-btn" class="btn-icon"><i class="fa-solid fa-moon"></i></button>
+                <div class="header-actions">
+                    <button id="privacy-btn" class="btn-icon"><i class="fa-solid fa-eye"></i></button>
+                    <button id="theme-btn" class="btn-icon"><i class="fa-solid fa-moon"></i></button>
+                </div>
             </header>
 
             <div class="balance-card">
                 <p>Saldo Atual</p>
-                <h1 id="total-balance">R$ 0,00</h1>
+                <h1 id="total-balance" class="amount-text">R$ 0,00</h1>
                 <div class="balance-row">
                     <div class="balance-col">
                         <i class="fa-solid fa-arrow-down income-icon"></i>
                         <div>
                             <span>Receitas</span>
-                            <p id="total-income">R$ 0,00</p>
+                            <p id="total-income" class="amount-text">R$ 0,00</p>
                         </div>
                     </div>
                     <div class="balance-col">
                         <i class="fa-solid fa-arrow-up expense-icon"></i>
                         <div>
                             <span>Despesas</span>
-                            <p id="total-expense">R$ 0,00</p>
+                            <p id="total-expense" class="amount-text">R$ 0,00</p>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- NOVA SEÇÃO: CAIXINHAS -->
             <div class="section-title">
+                <h3>Minhas Caixinhas</h3>
+                <span class="filter-badge"><i class="fa-solid fa-plus"></i> Nova</span>
+            </div>
+            <div class="caixinhas-scroll">
+                <div class="caixinha-card">
+                    <div class="caixinha-icon"><i class="fa-solid fa-building"></i></div>
+                    <h4>Apartamento</h4>
+                    <p class="amount-text">R$ 2.500 / R$ 15.000</p>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 16%;"></div></div>
+                </div>
+                <div class="caixinha-card">
+                    <div class="caixinha-icon" style="color: #3b82f6;"><i class="fa-solid fa-shield"></i></div>
+                    <h4>Reserva de Emergência</h4>
+                    <p class="amount-text">R$ 1.000 / R$ 5.000</p>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 20%; background: #3b82f6;"></div></div>
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-top: 1.5rem;">
                 <h3>Últimas Transações</h3>
                 <span class="filter-badge">Este Mês</span>
             </div>
-            
-            <div class="transactions-list-mobile" id="transaction-list-mobile">
-                <!-- Lista injetada via JS -->
-            </div>
+            <div class="transactions-list-mobile" id="transaction-list-mobile"></div>
         </section>
 
-        <!-- ABA 2: LANÇAR (Formulário) -->
+        <!-- ABA 2: LANÇAR -->
         <section id="tab-add" class="tab-content">
-            <header class="app-header-simple">
-                <h2>Novo Lançamento</h2>
-            </header>
-            
+            <header class="app-header-simple"><h2>Novo Lançamento</h2></header>
             <div class="panel">
                 <form id="transaction-form">
                     <div class="form-group amount-group">
                         <label for="amount">Valor da Transação</label>
                         <div class="input-prefix">
-                            <span>R$</span>
-                            <input type="number" step="0.01" id="amount" placeholder="0,00" required>
+                            <span>R$</span><input type="number" step="0.01" id="amount" placeholder="0,00" required>
                         </div>
                     </div>
-                    
                     <div class="type-selector">
                         <input type="radio" id="type-expense" name="type-radio" value="expense" checked>
                         <label for="type-expense" class="type-btn expense-btn">Despesa</label>
-                        
                         <input type="radio" id="type-income" name="type-radio" value="income">
                         <label for="type-income" class="type-btn income-btn">Receita</label>
                     </div>
-                    <input type="hidden" id="type" value="expense"> <!-- Campo oculto para compatibilidade com o JS antigo -->
-
+                    <input type="hidden" id="type" value="expense">
                     <div class="form-group">
                         <label for="description">Descrição</label>
-                        <input type="text" id="description" placeholder="Ex: Supermercado, Aluguel..." required>
+                        <input type="text" id="description" placeholder="Ex: Supermercado, Internet..." required>
                     </div>
-                    
                     <div class="form-row">
                         <div class="form-group">
                             <label for="category">Categoria</label>
@@ -107,6 +119,7 @@
                                 <option value="Alimentação">Alimentação</option>
                                 <option value="Moradia">Moradia</option>
                                 <option value="Transporte">Transporte</option>
+                                <option value="Veículo">Veículo</option>
                                 <option value="Lazer">Lazer</option>
                                 <option value="Salário">Salário</option>
                                 <option value="Outros">Outros</option>
@@ -117,100 +130,108 @@
                             <input type="date" id="date" required>
                         </div>
                     </div>
-                    
                     <div class="form-group checkbox-group">
-                        <label>
-                            <input type="checkbox" id="is-recurring"> 
-                            <span>Despesa Fixa / Recorrente</span>
-                        </label>
+                        <label><input type="checkbox" id="is-recurring"> <span>Despesa Fixa / Recorrente</span></label>
                     </div>
-                    
                     <button type="submit" class="btn-primary btn-large">Salvar Lançamento</button>
                 </form>
             </div>
         </section>
 
-        <!-- ABA 3: RELATÓRIOS E METAS -->
-        <section id="tab-reports" class="tab-content">
-            <header class="app-header-simple">
-                <h2>Relatórios</h2>
-            </header>
-
-            <div class="filter-panel">
-                <select id="filter-month">
-                    <option value="all">Todos os Meses</option>
-                    <option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option>
-                    <option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option>
-                    <option value="07">Jul</option><option value="08">Ago</option><option value="09" selected>Set</option>
-                    <option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option>
-                </select>
-                <select id="filter-year">
-                    <option value="all">Todos os Anos</option>
-                    <option value="2025">2025</option>
-                    <option value="2026" selected>2026</option>
-                </select>
-            </div>
-
-            <div class="panel chart-panel">
-                <h3>Gastos por Categoria</h3>
-                <div class="chart-container">
-                    <canvas id="expenseChart"></canvas>
+        <!-- ABA 3: VEÍCULOS (NOVA) -->
+        <section id="tab-vehicles" class="tab-content">
+            <header class="app-header-simple"><h2>Frota Pessoal</h2></header>
+            
+            <div class="vehicle-card">
+                <div class="vehicle-header">
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <div class="vehicle-icon"><i class="fa-solid fa-motorcycle"></i></div>
+                        <h3>Yamaha FZ25</h3>
+                    </div>
+                    <span class="badge-category">2025</span>
+                </div>
+                <div class="vehicle-stats">
+                    <div class="stat-box">
+                        <span>Gasto no Mês</span>
+                        <p class="amount-text" style="color:var(--expense);">R$ 0,00</p>
+                    </div>
+                    <div class="stat-box">
+                        <span>Próx. Revisão</span>
+                        <p>10.000 km</p>
+                    </div>
+                </div>
+                <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+                    <button class="btn-secondary" style="flex:1; font-size:0.8rem;"><i class="fa-solid fa-gas-pump"></i> Abastecer</button>
+                    <button class="btn-secondary" style="flex:1; font-size:0.8rem;"><i class="fa-solid fa-wrench"></i> Manutenção</button>
                 </div>
             </div>
 
-            <div class="panel budget-panel">
-                <h3>Metas de Gastos</h3>
-                <div class="budget-list" id="budget-list">
-                    <!-- Gerado via JS -->
+            <div class="vehicle-card">
+                <div class="vehicle-header">
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <div class="vehicle-icon"><i class="fa-solid fa-car"></i></div>
+                        <h3>Carro (Principal)</h3>
+                    </div>
+                </div>
+                <div class="vehicle-stats">
+                    <div class="stat-box"><span>Gasto no Mês</span><p class="amount-text" style="color:var(--expense);">R$ 0,00</p></div>
+                    <div class="stat-box"><span>Seguro</span><p>Ativo</p></div>
                 </div>
             </div>
         </section>
 
-        <!-- ABA 4: PERFIL E CONFIG -->
-        <section id="tab-profile" class="tab-content">
-            <header class="app-header-simple">
-                <h2>Perfil</h2>
-            </header>
+        <!-- ABA 4: RELATÓRIOS -->
+        <section id="tab-reports" class="tab-content">
+            <header class="app-header-simple"><h2>Relatórios</h2></header>
+            <div class="filter-panel">
+                <select id="filter-month">
+                    <option value="all">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09" selected>Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option>
+                </select>
+                <select id="filter-year"><option value="all">Todos</option><option value="2025">2025</option><option value="2026" selected>2026</option></select>
+            </div>
             
+            <button id="export-pdf-btn" class="btn-secondary" style="width:100%; margin-bottom:1.5rem;"><i class="fa-solid fa-file-pdf"></i> Exportar Relatório em PDF</button>
+
+            <!-- Área que será exportada -->
+            <div id="export-area">
+                <div class="panel chart-panel">
+                    <h3>Gastos por Categoria</h3>
+                    <div class="chart-container"><canvas id="expenseChart"></canvas></div>
+                </div>
+                <div class="panel budget-panel">
+                    <h3>Metas de Gastos</h3>
+                    <div class="budget-list" id="budget-list"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABA 5: PERFIL -->
+        <section id="tab-profile" class="tab-content">
+            <header class="app-header-simple"><h2>Perfil</h2></header>
             <div class="panel text-center">
                 <img id="profile-photo-large" src="" alt="Foto" class="avatar-large">
                 <h3 id="profile-name">Nome</h3>
             </div>
-
             <div class="panel">
                 <h3>Câmbio Atual</h3>
                 <div class="ticker-box">
-                    <div class="ticker-item"><i class="fa-solid fa-dollar-sign"></i> <span id="usd-rate">Carregando...</span></div>
-                    <div class="ticker-item"><i class="fa-solid fa-euro-sign"></i> <span id="eur-rate">Carregando...</span></div>
+                    <div class="ticker-item"><i class="fa-solid fa-dollar-sign"></i> <span id="usd-rate" class="amount-text">...</span></div>
+                    <div class="ticker-item"><i class="fa-solid fa-euro-sign"></i> <span id="eur-rate" class="amount-text">...</span></div>
                 </div>
             </div>
-
             <button id="logout-btn" class="btn-danger btn-large"><i class="fa-solid fa-right-from-bracket"></i> Sair da Conta</button>
-            <div class="hidden" style="display:none;"><tbody id="transaction-list"></tbody></div> <!-- Mantido para evitar erro no JS -->
         </section>
 
-        <!-- MENU INFERIOR (Bottom Navigation) -->
+        <!-- MENU INFERIOR (5 Abas) -->
         <nav class="bottom-nav">
-            <button class="nav-item active" data-tab="tab-home">
-                <i class="fa-solid fa-house"></i>
-                <span>Início</span>
-            </button>
-            <button class="nav-item action-item" data-tab="tab-add">
-                <div class="fab"><i class="fa-solid fa-plus"></i></div>
-                <span>Lançar</span>
-            </button>
-            <button class="nav-item" data-tab="tab-reports">
-                <i class="fa-solid fa-chart-pie"></i>
-                <span>Relatórios</span>
-            </button>
-            <button class="nav-item" data-tab="tab-profile">
-                <i class="fa-solid fa-user"></i>
-                <span>Perfil</span>
-            </button>
+            <button class="nav-item active" data-tab="tab-home"><i class="fa-solid fa-house"></i><span>Início</span></button>
+            <button class="nav-item" data-tab="tab-vehicles"><i class="fa-solid fa-car"></i><span>Veículos</span></button>
+            <button class="nav-item action-item" data-tab="tab-add"><div class="fab"><i class="fa-solid fa-plus"></i></div><span>Lançar</span></button>
+            <button class="nav-item" data-tab="tab-reports"><i class="fa-solid fa-chart-pie"></i><span>Relatórios</span></button>
+            <button class="nav-item" data-tab="tab-profile"><i class="fa-solid fa-user"></i><span>Perfil</span></button>
         </nav>
 
     </div>
-
     <script type="module" src="app.js"></script>
 </body>
 </html>
